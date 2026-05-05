@@ -27,15 +27,13 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install clean-css-cli
-        run: npm install -g clean-css-cli
+      - name: Install csso-cli
+        run: npm install -g csso-cli
 
       - name: Minify CSS
         run: |
-          cleancss \
-            --level 2 \
-            --output Theme/disney-plus-jellyfin-theme.min.css \
-            Theme/disney-plus-jellyfin-theme.css
+          csso Theme/disney-plus-jellyfin-theme.css \
+            --output Theme/disney-plus-jellyfin-theme.min.css
 
       - name: Print size comparison
         run: |
