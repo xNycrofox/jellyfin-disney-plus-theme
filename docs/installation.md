@@ -7,26 +7,28 @@
 
 ---
 
-## Method 1 — Import via URL (recommended)
+## Method 1 — Import via jsDelivr (recommended)
 
-Paste one of these directly into the **Custom CSS** field. Jellyfin fetches the file from GitHub — no copying needed, and you get updates automatically.
+[jsDelivr](https://www.jsdelivr.com) serves GitHub repos as a CDN. Unlike `raw.githubusercontent.com`, `cdn.jsdelivr.net` is widely permitted by Jellyfin's default Content Security Policy.
 
-**Full (readable) version:**
+**Minified** (recommended):
 ```css
-@import url("https://raw.githubusercontent.com/xNycrofox/jellyfin-disney-plus-theme/main/Theme/disney-plus-jellyfin-theme.css");
+@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@main/Theme/disney-plus-jellyfin-theme.min.css");
 ```
 
-**Minified version** (smaller, faster):
+**Full / unminified:**
 ```css
-@import url("https://raw.githubusercontent.com/xNycrofox/jellyfin-disney-plus-theme/main/Theme/disney-plus-jellyfin-theme.min.css");
+@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@main/Theme/disney-plus-jellyfin-theme.css");
 ```
 
 Steps:
 1. Log in with an admin account.
 2. Navigate to **Dashboard → General**.
 3. Scroll to **Custom CSS code**.
-4. Paste the import line above.
+4. Paste one of the import lines above.
 5. Click **Save** and hard-reload (`Ctrl + Shift + R` / `Cmd + Shift + R`).
+
+> If the theme still doesn't appear, your server's CSP is stricter than Jellyfin's default. Use Method 2 instead.
 
 ---
 

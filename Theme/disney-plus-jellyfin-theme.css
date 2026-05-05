@@ -1,10 +1,10 @@
+/* @import must be the very first rule — no comments before it */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap");
+
 /* Disney+ Theme for Jellyfin
  * Recreates the Disney+ visual design for Jellyfin
  * Reference: disney_referenz (React clone of Disney+)
  */
-
-/* Poppins — visually close to Disney+'s Avenir typeface */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap");
 
 /* =====================================================================
    CSS VARIABLES
@@ -102,7 +102,7 @@
     --blurDefault:               blur(8px);
     --blurLarge:                 blur(16px);
     --blurLargest:               blur(24px);
-    --resumeCardScale:           1.25;
+    --resumeCardScale:           1.0;
     --backdropTrimFromTop:       10%;
     --clearLogoBottomSpace:      11em;
 }
@@ -387,29 +387,59 @@ select { text-overflow: ellipsis; }
 
 .layout-mobile .sectionTabs { align-content: center; }
 
+/* Disney+ nav link style: flat text + animated underline on hover/active */
 .sectionTabs .emby-tab-button {
     display: inline-flex;
-    margin: 0.25em 0.35em;
-    padding: 0 1.25em;
-    height: 2.25em;
+    align-items: center;
+    margin: 0;
+    padding: 0 12px;
+    height: 100%;
     color: var(--dp-text-dim);
-    font-weight: 500;
-    font-size: 0.875em;
-    letter-spacing: 0.05em;
-    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 1.42px;
+    line-height: 1.08;
+    white-space: nowrap;
     background-color: transparent;
-    transition: color 150ms ease, background-color 150ms ease;
+    border-radius: 0;
+    position: relative;
+    transition: color 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
+}
+
+/* Underline indicator — starts invisible and scaled to 0 */
+.sectionTabs .emby-tab-button::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: rgb(249, 249, 249);
+    border-radius: 0 0 4px 4px;
+    transform-origin: left center;
+    transform: scaleX(0);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
 }
 
 .sectionTabs .emby-tab-button:hover {
     color: var(--dp-text);
-    background-color: rgba(249,249,249,0.08);
+    background-color: transparent;
+}
+
+/* Slide underline in on hover and keep it for the active tab */
+.sectionTabs .emby-tab-button:hover::after,
+.sectionTabs .emby-tab-button-active::after {
+    transform: scaleX(1);
+    visibility: visible;
+    opacity: 1;
 }
 
 .sectionTabs .emby-tab-button-active {
     color: var(--dp-text);
-    font-weight: 600;
-    background-color: rgba(249,249,249,0.12);
+    font-weight: 400;
+    background-color: transparent;
 }
 
 /* Library page padding to account for header + tabs */
@@ -626,62 +656,67 @@ select { text-overflow: ellipsis; }
     .backdropCard                            { --cardCount: 10; }
     .overflowBackdropCard                    { --cardCount: 9; }
 }
+/* Disney+ uses 4 landscape columns at all desktop sizes, 2 on mobile.
+   Portrait cards (posters) don't exist in Disney+ — keep them denser. */
 @media (max-width: 220em) {
     .portraitCard, .squareCard               { --cardCount: 12; }
     .overflowPortraitCard, .overflowSquareCard { --cardCount: 11; }
     .squareCard:has(.cardFooter)             { --cardCount: 9; }
-    .backdropCard, .overflowBackdropCard     { --cardCount: 7; }
-}
-@media (max-width: 170em) {
-    .portraitCard, .squareCard               { --cardCount: 10; }
-    .overflowPortraitCard, .overflowSquareCard { --cardCount: 9; }
-    .squareCard:has(.cardFooter)             { --cardCount: 9; }
-    .backdropCard, .overflowBackdropCard     { --cardCount: 6; }
-}
-@media (max-width: 140em) {
-    .portraitCard, .squareCard               { --cardCount: 9; }
-    .overflowPortraitCard, .overflowSquareCard { --cardCount: 8; }
-    .squareCard:has(.cardFooter)             { --cardCount: 7; }
     .backdropCard, .overflowBackdropCard     { --cardCount: 5; }
 }
-@media (max-width: 120em) {
+@media (max-width: 170em) {
+    /* 1440p — Disney+ reference: 4 columns */
     .portraitCard, .squareCard               { --cardCount: 8; }
     .overflowPortraitCard, .overflowSquareCard { --cardCount: 7; }
+    .squareCard:has(.cardFooter)             { --cardCount: 7; }
+    .backdropCard, .overflowBackdropCard     { --cardCount: 4; }
+}
+@media (max-width: 140em) {
+    .portraitCard, .squareCard               { --cardCount: 7; }
+    .overflowPortraitCard, .overflowSquareCard { --cardCount: 6; }
     .squareCard:has(.cardFooter)             { --cardCount: 6; }
-    .backdropCard, .overflowBackdropCard,
+    .backdropCard, .overflowBackdropCard     { --cardCount: 4; }
+}
+@media (max-width: 120em) {
+    /* 1080p — Disney+ reference: 4 columns */
+    .portraitCard, .squareCard               { --cardCount: 6; }
+    .overflowPortraitCard, .overflowSquareCard { --cardCount: 5; }
+    .squareCard:has(.cardFooter)             { --cardCount: 5; }
+    .backdropCard, .overflowBackdropCard     { --cardCount: 4; }
     .layout-tv .portraitCard, .layout-tv .squareCard,
     .layout-tv .overflowPortraitCard, .layout-tv .overflowSquareCard { --cardCount: 5; }
     .layout-tv .backdropCard, .layout-tv .overflowBackdropCard { --cardCount: 3; }
 }
 @media (max-width: 100em) {
     .portraitCard, .squareCard,
-    .overflowPortraitCard, .overflowSquareCard { --cardCount: 7; }
-    .squareCard:has(.cardFooter)             { --cardCount: 6; }
-    .backdropCard, .overflowBackdropCard     { --cardCount: 4; }
-}
-@media (max-width: 80em) {
-    .portraitCard, .squareCard,
-    .overflowPortraitCard, .overflowSquareCard { --cardCount: 6; }
-    .squareCard:has(.cardFooter)             { --cardCount: 5; }
-    .backdropCard, .overflowBackdropCard     { --cardCount: 4; }
-}
-@media (max-width: 62em) {
-    .portraitCard, .squareCard,
     .overflowPortraitCard, .overflowSquareCard { --cardCount: 5; }
     .squareCard:has(.cardFooter)             { --cardCount: 4; }
     .backdropCard, .overflowBackdropCard     { --cardCount: 4; }
 }
-@media (max-width: 48.125em) {
+@media (max-width: 80em) {
+    .portraitCard, .squareCard,
+    .overflowPortraitCard, .overflowSquareCard { --cardCount: 4; }
+    .squareCard:has(.cardFooter)             { --cardCount: 4; }
+    .backdropCard, .overflowBackdropCard     { --cardCount: 3; }
+}
+@media (max-width: 62em) {
     .portraitCard, .squareCard,
     .overflowPortraitCard, .overflowSquareCard { --cardCount: 4; }
     .squareCard:has(.cardFooter)             { --cardCount: 3; }
     .backdropCard, .overflowBackdropCard     { --cardCount: 3; }
 }
+@media (max-width: 48.125em) {
+    .portraitCard, .squareCard,
+    .overflowPortraitCard, .overflowSquareCard { --cardCount: 3; }
+    .squareCard:has(.cardFooter)             { --cardCount: 3; }
+    .backdropCard, .overflowBackdropCard     { --cardCount: 2; }
+}
 @media (max-width: 30em) {
+    /* Mobile — Disney+ reference: 2 columns */
     .portraitCard, .squareCard,
     .overflowPortraitCard, .overflowSquareCard,
     .layout-mobile .portraitCard, .layout-mobile .squareCard,
-    .layout-mobile .overflowPortraitCard, .layout-mobile .overflowSquareCard { --cardCount: 3; }
+    .layout-mobile .overflowPortraitCard, .layout-mobile .overflowSquareCard { --cardCount: 2; }
     .squareCard:has(.cardFooter) { --cardCount: 2; }
     .backdropCard, .overflowBackdropCard { --cardCount: 2; }
 }
