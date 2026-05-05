@@ -1,0 +1,57 @@
+name: Minify CSS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Theme/disney-plus-jellyfin-theme.css'
+
+jobs:
+  minify:
+    name: Build minified CSS
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch with the token so the push step is authenticated
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install clean-css-cli
+        run: npm install -g clean-css-cli
+
+      - name: Minify CSS
+        run: |
+          cleancss \
+            --level 2 \
+            --output Theme/disney-plus-jellyfin-theme.min.css \
+            Theme/disney-plus-jellyfin-theme.css
+
+      - name: Print size comparison
+        run: |
+          ORIG=$(wc -c < Theme/disney-plus-jellyfin-theme.css)
+          MIN=$(wc -c < Theme/disney-plus-jellyfin-theme.min.css)
+          SAVED=$(( ORIG - MIN ))
+          PCT=$(( SAVED * 100 / ORIG ))
+          echo "Original : ${ORIG} bytes"
+          echo "Minified : ${MIN} bytes"
+          echo "Saved    : ${SAVED} bytes (${PCT}%)"
+
+      - name: Commit minified file
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Theme/disney-plus-jellyfin-theme.min.css
+          # Only commit if the file actually changed
+          git diff --staged --quiet && echo "No changes to commit." || \
+            git commit -m "chore: rebuild minified CSS [skip ci]"
+          git push
