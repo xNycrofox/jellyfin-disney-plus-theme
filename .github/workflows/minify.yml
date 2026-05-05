@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'Theme/disney-plus-jellyfin-theme.css'
+  workflow_dispatch:
 
 jobs:
   minify:
