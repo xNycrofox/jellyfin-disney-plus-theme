@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install csso-cli
+        run: npm install -g csso-cli
+
+      - name: Build minified CSS
+        run: |
+          csso Theme/disney-plus-jellyfin-theme.css \
+            --output Theme/disney-plus-jellyfin-theme.min.css
+
+      - name: Print size comparison
+        run: |
+          ORIG=$(wc -c < Theme/disney-plus-jellyfin-theme.css)
+          MIN=$(wc -c < Theme/disney-plus-jellyfin-theme.min.css)
+          SAVED=$(( ORIG - MIN ))
+          PCT=$(( SAVED * 100 / ORIG ))
+          echo "Original : ${ORIG} bytes"
+          echo "Minified : ${MIN} bytes"
+          echo "Saved    : ${SAVED} bytes (${PCT}%)"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            Theme/disney-plus-jellyfin-theme.css
+            Theme/disney-plus-jellyfin-theme.min.css

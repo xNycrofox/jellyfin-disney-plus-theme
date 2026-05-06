@@ -32,27 +32,28 @@ A complete CSS theme for [Jellyfin](https://jellyfin.org) that recreates the Dis
 
 Paste **one** of these into **Dashboard → General → Custom CSS**:
 
-**Minified** (recommended — auto-rebuilt on every update):
+**Minified** (recommended):
 ```css
-@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@main/Theme/disney-plus-jellyfin-theme.min.css");
+@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@latest/Theme/disney-plus-jellyfin-theme.min.css");
 ```
 
 **Full / unminified:**
 ```css
-@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@main/Theme/disney-plus-jellyfin-theme.css");
+@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@latest/Theme/disney-plus-jellyfin-theme.css");
 ```
 
 Then click **Save** and hard-reload (`Ctrl+Shift+R` / `Cmd+Shift+R`).
 
+> `@latest` resolves to the newest semver release tag and is cached for 7 days on jsDelivr.
 > If the import still does not apply, your server's CSP is stricter than default. Use Option B instead.
 
 ### Option B — Paste the full CSS (always works)
 
 Works on every Jellyfin instance regardless of CSP configuration.
 
-1. Open the raw file:
-   - **[Minified (smaller)](https://raw.githubusercontent.com/xNycrofox/jellyfin-disney-plus-theme/main/Theme/disney-plus-jellyfin-theme.min.css)**
-   - **[Full (readable)](https://raw.githubusercontent.com/xNycrofox/jellyfin-disney-plus-theme/main/Theme/disney-plus-jellyfin-theme.css)**
+1. Download from the [latest release](https://github.com/xNycrofox/jellyfin-disney-plus-theme/releases/latest):
+   - **`disney-plus-jellyfin-theme.min.css`** (smaller)
+   - **`disney-plus-jellyfin-theme.css`** (readable)
 2. Select all (`Ctrl+A`) and copy.
 3. Go to **Dashboard → General → Custom CSS**, paste, and click **Save**.
 4. Hard-reload (`Ctrl+Shift+R` / `Cmd+Shift+R`).
@@ -117,13 +118,18 @@ jellyfin-disney-plus-theme/
 
 ## CI / Minification
 
-Every push to `main` that modifies `Theme/disney-plus-jellyfin-theme.css` triggers a GitHub Action that:
+Two automated workflows handle building and releasing:
 
-1. Runs `clean-css` with level-2 optimizations.
-2. Writes the result to `Theme/disney-plus-jellyfin-theme.min.css`.
-3. Commits and pushes the minified file back automatically.
+**On every push to `main`** that touches the source CSS:
+1. `csso` minifies the file.
+2. The `.min.css` is committed back automatically.
 
-The minified file is therefore always in sync with the source. **Edit only the source file**, never the `.min.css`.
+**On every semver tag** (`v*.*.*`):
+1. `csso` builds a fresh `.min.css`.
+2. A GitHub Release is created with both CSS files attached.
+3. jsDelivr's `@latest` URL updates to point to this tag (within 7 days, or purgeable via their API).
+
+**Edit only the source file**, never the `.min.css`.
 
 ---
 

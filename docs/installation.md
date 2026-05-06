@@ -13,13 +13,15 @@
 
 **Minified** (recommended):
 ```css
-@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@main/Theme/disney-plus-jellyfin-theme.min.css");
+@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@latest/Theme/disney-plus-jellyfin-theme.min.css");
 ```
 
 **Full / unminified:**
 ```css
-@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@main/Theme/disney-plus-jellyfin-theme.css");
+@import url("https://cdn.jsdelivr.net/gh/xNycrofox/jellyfin-disney-plus-theme@latest/Theme/disney-plus-jellyfin-theme.css");
 ```
+
+> `@latest` resolves to the newest semver release and is cached 7 days on jsDelivr (vs. 12 h for `@main`).
 
 Steps:
 1. Log in with an admin account.
@@ -36,7 +38,7 @@ Steps:
 
 If your server has no internet access or you want to pin a specific version:
 
-1. Download [`Theme/disney-plus-jellyfin-theme.css`](../Theme/disney-plus-jellyfin-theme.css) (or the [minified version](../Theme/disney-plus-jellyfin-theme.min.css)).
+1. Download from the [latest GitHub Release](https://github.com/xNycrofox/jellyfin-disney-plus-theme/releases/latest) (`disney-plus-jellyfin-theme.css` or `.min.css`).
 2. Copy the entire file contents.
 3. Paste into **Dashboard → General → Custom CSS**.
 4. Click **Save** and reload.
