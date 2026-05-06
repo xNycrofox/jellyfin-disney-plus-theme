@@ -127,7 +127,6 @@ html,
 .nowPlayingPlaylist,
 .nowPlayingContextMenu,
 .backgroundContainer:not(.withBackdrop),
-.backgroundContainer:not(.backgroundContainer-transparent),
 .backdropContainer {
     background-color: var(--dp-bg) !important;
     background: var(--dp-bg) !important;
@@ -166,22 +165,35 @@ select { text-overflow: ellipsis; }
 /* =====================================================================
    BACKGROUND / BACKDROP
    ===================================================================== */
+/* Backdrop visible on normal pages: dark at bottom, transparent at top */
 .backgroundContainer.withBackdrop {
     opacity: 1;
-    background: linear-gradient(0deg, var(--dp-bg) 0%, rgba(4,7,20,0.4) 60%, transparent 100%);
+    background: linear-gradient(0deg, var(--dp-bg) 0%, rgba(4,7,20,0.3) 55%, transparent 100%) !important;
 }
 
 .layout-tv .backgroundContainer.withBackdrop {
-    background: linear-gradient(0deg, var(--dp-bg) 0%, rgba(4,7,20,0.9) 100%);
+    background: linear-gradient(0deg, var(--dp-bg) 0%, rgba(4,7,20,0.9) 100%) !important;
 }
 
 .layout-mobile .backgroundContainer.withBackdrop {
     opacity: 1;
-    background: var(--dp-bg);
+    background: var(--dp-bg) !important;
 }
 
-.withSectionTabs .backgroundContainer.withBackdrop {
-    background: var(--dp-bg);
+/* On library filter pages (tabs = genre/year filters): hide backdrop */
+body:not(:has(#itemDetailPage:not(.hide))) .withSectionTabs .backgroundContainer.withBackdrop {
+    background: var(--dp-bg) !important;
+}
+
+/* On detail page: restore full backdrop even when section tabs are present */
+body:has(#itemDetailPage:not(.hide)) .backgroundContainer.withBackdrop {
+    background: linear-gradient(
+        to bottom,
+        rgba(4,7,20,0.05) 0%,
+        rgba(4,7,20,0.15) 50%,
+        rgba(4,7,20,0.7)  75%,
+        var(--dp-bg)      100%
+    ) !important;
 }
 
 .backdropImage {
@@ -212,8 +224,11 @@ select { text-overflow: ellipsis; }
     transition: opacity 0.25s;
 }
 
-.layout-desktop .withSectionTabs .backdropImage:after { opacity: 0; }
-.layout-mobile .withSectionTabs .backdropImage:after { display: none; }
+/* Hide ::after on library filter pages, but keep it on the detail page */
+body:not(:has(#itemDetailPage:not(.hide))).layout-desktop .withSectionTabs .backdropImage:after { opacity: 0; }
+body:not(:has(#itemDetailPage:not(.hide))).layout-mobile .withSectionTabs .backdropImage:after { display: none; }
+/* On detail page: always show the ::after layer */
+body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !important; }
 
 /* Fade-in animation */
 @keyframes animScaleUp {
@@ -1138,11 +1153,11 @@ select { text-overflow: ellipsis; }
     to   { transform: translateY(-100%); opacity: 1; }
 }
 
-/* Backdrop */
+/* Backdrop — Disney+: fills most of the viewport */
 .itemBackdrop { display: block !important; }
 
 .layout-desktop .itemBackdrop {
-    height: calc(100vh - 27vh - var(--primaryItemPageNegativeSpace));
+    height: 75vh;
 }
 
 .layout-mobile .itemBackdrop {
@@ -1157,6 +1172,7 @@ select { text-overflow: ellipsis; }
 
 .layout-tv .itemBackdrop { height: 33vh; }
 
+/* Secondary content (episodes, music, persons): smaller backdrop */
 #itemDetailPage:has(.subtitle) .itemBackdrop,
 #itemDetailPage:has(.musicParentName) .itemBackdrop,
 #itemDetailPage:has(.detailImageContainer .backdropCard) .itemBackdrop,
@@ -1164,7 +1180,7 @@ select { text-overflow: ellipsis; }
 #itemDetailPage:has(.detailImageContainer .queue) .itemBackdrop,
 #itemDetailPage:has(.detailImageContainer .book) .itemBackdrop,
 #itemDetailPage:has(.detailImageContainer .live_tv) .itemBackdrop {
-    height: calc(100vh - 27vh - var(--secondaryItemPageNegativeSpace));
+    height: 45vh;
 }
 
 #itemDetailPage:has(.detailImageContainer .cardPadder-square:not(.person)) .itemBackdrop {
@@ -1183,10 +1199,16 @@ select { text-overflow: ellipsis; }
     margin-top: unset;
 }
 
+/* Gradient overlay on detail page — transparent at top (backdrop visible), dark at bottom */
 .layout-desktop .detailPageWrapperContainer {
-    background: transparent;
     min-height: 46vh;
-    background: linear-gradient(180deg, transparent, 17vh, rgba(4,7,20,0.85) 50vh);
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        transparent 35%,
+        rgba(4,7,20,0.6) 55%,
+        var(--dp-bg) 80%
+    );
 }
 
 .layout-tv .detailPageWrapperContainer {
@@ -1287,27 +1309,29 @@ select { text-overflow: ellipsis; }
 .layout-mobile .detailImageContainer:has(.card:not(.portraitCard)) { height: 0; }
 .layout-mobile .detailImageContainer .card { position: inherit !important; margin-top: -150%; max-width: 60vw; }
 
-/* Info wrapper (title, buttons) */
+/* Info wrapper (title, buttons) — Disney+: left-aligned */
 .infoWrapper {
     align-content: end;
-    place-items: center;
+    place-items: start;
     display: grid;
-    text-align: center;
+    text-align: left;
 }
 
 .layout-mobile [dir="ltr"] .infoWrapper,
 .layout-mobile .infoWrapper { padding-left: 0; }
 
-/* Clear logo */
+/* Clear logo — Disney+: positioned left, not centered */
 .detailLogo {
     display: var(--clearLogoVisibility);
     top: calc(100vh - var(--clearLogoBottomSpace) - var(--primaryItemPageNegativeSpace));
     left: 0;
     width: 40%;
+    max-width: 45vw;
     transform: translateY(-100%);
-    margin: auto 30%;
+    margin: auto 0;
+    margin-left: var(--dp-side-padding);
     height: 25vh;
-    background-position: bottom;
+    background-position: bottom left;
     filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.8));
 }
 
@@ -1333,10 +1357,10 @@ select { text-overflow: ellipsis; }
 }
 
 #itemDetailPage:has(.subtitle) .detailLogo {
-    top: calc(100vh - 6em - var(--secondaryItemPageNegativeSpace));
+    top: calc(45vh - 6em);
 }
 .layout-mobile #itemDetailPage:has(.subtitle) .detailLogo {
-    top: calc(100vh - 11em - var(--secondaryItemPageNegativeSpace));
+    top: calc(45vh - 11em);
 }
 
 /* Hide logo if backdrop/album/person is shown */
@@ -1411,10 +1435,10 @@ select { text-overflow: ellipsis; }
     color: var(--dp-text-dim);
 }
 
-/* Ratings / media info */
+/* Ratings / media info — Disney+: left-aligned */
 .itemMiscInfo {
     align-items: flex-end !important;
-    justify-content: center;
+    justify-content: flex-start;
     color: var(--dp-text-dim);
     font-size: 0.9em;
 }
@@ -1444,9 +1468,9 @@ select { text-overflow: ellipsis; }
     -webkit-text-fill-color: transparent;
 }
 
-/* Detail buttons */
+/* Detail buttons — Disney+: left-aligned */
 .mainDetailButtons {
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0;
     gap: 0.75em;
 }
