@@ -126,8 +126,7 @@ body {
 html,
 .nowPlayingPlaylist,
 .nowPlayingContextMenu,
-.backgroundContainer:not(.withBackdrop),
-.backdropContainer {
+.backgroundContainer:not(.withBackdrop) {
     background-color: var(--dp-bg) !important;
     background: var(--dp-bg) !important;
 }
@@ -1224,10 +1223,11 @@ body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !importan
     margin-top: 0.5em;
 }
 
-/* Primary content container — Disney+: content flush left */
+/* Primary content container — stretch so children fill full width,
+   allowing inner flex-start / text-align: left to take effect */
 .detailPagePrimaryContainer {
     align-content: space-between;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: end;
     flex-direction: column;
     text-align: left;
