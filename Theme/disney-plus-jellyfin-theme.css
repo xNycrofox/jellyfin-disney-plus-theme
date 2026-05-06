@@ -180,18 +180,19 @@ select { text-overflow: ellipsis; }
     background: var(--dp-bg) !important;
 }
 
-/* On library filter pages (tabs = genre/year filters): hide backdrop */
-body:not(:has(#itemDetailPage:not(.hide))) .withSectionTabs .backgroundContainer.withBackdrop {
+/* On library filter pages with tabs (genre/year filters): hide backdrop.
+   body.withSectionTabs is set by Jellyfin when a tabbed page is active. */
+body.withSectionTabs:not(:has(#itemDetailPage:not(.hide))) .backgroundContainer.withBackdrop {
     background: var(--dp-bg) !important;
 }
 
-/* On detail page: restore full backdrop even when section tabs are present */
+/* On detail page: always show backdrop, even when section tabs are active */
 body:has(#itemDetailPage:not(.hide)) .backgroundContainer.withBackdrop {
     background: linear-gradient(
         to bottom,
         rgba(4,7,20,0.05) 0%,
-        rgba(4,7,20,0.15) 50%,
-        rgba(4,7,20,0.7)  75%,
+        rgba(4,7,20,0.2)  50%,
+        rgba(4,7,20,0.75) 75%,
         var(--dp-bg)      100%
     ) !important;
 }
@@ -224,9 +225,9 @@ body:has(#itemDetailPage:not(.hide)) .backgroundContainer.withBackdrop {
     transition: opacity 0.25s;
 }
 
-/* Hide ::after on library filter pages, but keep it on the detail page */
-body:not(:has(#itemDetailPage:not(.hide))).layout-desktop .withSectionTabs .backdropImage:after { opacity: 0; }
-body:not(:has(#itemDetailPage:not(.hide))).layout-mobile .withSectionTabs .backdropImage:after { display: none; }
+/* Hide ::after on library filter pages (not on detail page) */
+html.layout-desktop body.withSectionTabs:not(:has(#itemDetailPage:not(.hide))) .backdropImage:after { opacity: 0; }
+html.layout-mobile  body.withSectionTabs:not(:has(#itemDetailPage:not(.hide))) .backdropImage:after { display: none; }
 /* On detail page: always show the ::after layer */
 body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !important; }
 
@@ -1223,10 +1224,10 @@ body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !importan
     margin-top: 0.5em;
 }
 
-/* Primary content container */
+/* Primary content container — Disney+: content flush left */
 .detailPagePrimaryContainer {
     align-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     justify-content: end;
     flex-direction: column;
     text-align: left;
@@ -1256,6 +1257,8 @@ body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !importan
 .detailPageSecondaryContainer { padding-top: 0 !important; }
 .detailRibbon { background-color: transparent; }
 
+/* Stretch children to full width so left-aligned content uses available space */
+.layout-desktop .detailPagePrimaryContent { width: 100%; box-sizing: border-box; }
 .detailPageContent { gap: 1em; }
 
 /* Detail page poster card */
