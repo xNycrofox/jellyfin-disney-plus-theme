@@ -484,10 +484,8 @@ body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !importan
 
 @media (max-width: 100em) {
     .sectionTabs { font-size: 100%; }
-    .layout-tv .sectionTabs { margin-top: unset; }
-    .layout-tv .libraryPage:not(.noSecondaryNavPage) {
-        padding-top: calc(var(--appBarHeight) * 2 + 0.5em) !important;
-    }
+    /* layout-tv sectionTabs and double-padding suppressed here because
+       disney-plus-header-nav.js provides the nav and hides sectionTabs */
 }
 
 @media (max-width: 75em) {
@@ -508,6 +506,94 @@ body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !importan
 .layout-tv .headerLeft {
     overflow: unset;
     margin: 0 0.6em;
+}
+
+/* =====================================================================
+   HEADER NAV (disney-plus-header-nav.js)
+   ===================================================================== */
+
+/* On desktop/TV: show home-button as the logo anchor, hide the hamburger */
+.layout-desktop .mainDrawerButton,
+.layout-tv      .mainDrawerButton { display: none !important; }
+
+.layout-desktop .headerHomeButton,
+.layout-tv      .headerHomeButton { display: flex !important; }
+
+/* On desktop/TV: hide sectionTabs (Startseite / Favoriten row) –
+   the custom nav replaces them visually                             */
+.layout-desktop .sectionTabs,
+.layout-tv      .sectionTabs { display: none !important; }
+
+/* Fix library-page top padding when sectionTabs are hidden */
+.layout-desktop .libraryPage:not(.noSecondaryNavPage),
+.layout-tv      .libraryPage:not(.noSecondaryNavPage) {
+    padding-top: calc(var(--appBarHeight) + 0.5em) !important;
+}
+
+/* Nav container: fills the space between logo and right icons */
+#dp-header-nav {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    margin-left: 0.5em;
+    overflow: hidden;
+}
+
+/* Individual nav links */
+.dp-nav-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 12px;
+    height: 100%;
+    color: rgba(249, 249, 249, 0.55);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 1.42px;
+    line-height: 1.08;
+    text-decoration: none;
+    white-space: nowrap;
+    position: relative;
+    transition: color 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.dp-nav-label {
+    position: relative;
+}
+
+/* Disney+ signature animated underline */
+.dp-nav-label::before {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgb(249, 249, 249);
+    border-radius: 0 0 4px 4px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.dp-nav-item:hover,
+.dp-nav-item--active {
+    color: rgb(249, 249, 249);
+}
+
+.dp-nav-item:hover .dp-nav-label::before,
+.dp-nav-item--active .dp-nav-label::before {
+    transform: scaleX(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+.dp-nav-icon {
+    font-size: 1.15em;
+    flex-shrink: 0;
 }
 
 /* =====================================================================
@@ -2589,6 +2675,61 @@ div[data-type="PhotoAlbum"] .play_arrow:before { content: "\e8eb"; }
 .headroom { transition: transform 0.5s; }
 
 /* =====================================================================
+   DETAIL PAGE TABS (disney-plus-detail-tabs.js)
+   ===================================================================== */
+
+/* Tab bar ------------------------------------------------------------ */
+.dpt-tabbar {
+    display: flex;
+    align-items: flex-end;
+    column-gap: 1.5em;
+    padding: 0;
+    margin-top: 0.5em;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(249, 249, 249, 0.18);
+}
+
+/* Tab buttons -------------------------------------------------------- */
+.dpt-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(249, 249, 249, 0.45);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.78em;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    margin-bottom: -1px; /* overlap the tabbar border */
+    padding: 0.85em 0;   /* horizontal spacing via column-gap on tabbar */
+    text-transform: uppercase;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.dpt-tab:hover { color: rgba(249, 249, 249, 0.8); }
+
+.dpt-tab--active {
+    color: #f9f9f9;
+    border-bottom-color: #f9f9f9;
+}
+
+/* Panel wrapper ------------------------------------------------------ */
+.dpt-panels {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Individual tab panels ---------------------------------------------- */
+.dpt-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding-top: 0.5em;
+}
+
+.dpt-panel[hidden] { display: none; }
+
+/* =====================================================================
    RESPONSIVE
    ===================================================================== */
 @media (orientation: portrait) {
@@ -2596,6 +2737,7 @@ div[data-type="PhotoAlbum"] .play_arrow:before { content: "\e8eb"; }
 }
 
 @media (orientation: portrait) and (max-width: 40em) {
+
     [data-type="Movie"] .listItemImage,
     [data-type="Series"] .listItemImage { display: unset; }
     .dashboardActionsContainer { font-size: min(3.6vw, 98%); }
