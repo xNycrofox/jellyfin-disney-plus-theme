@@ -1154,7 +1154,12 @@ body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !importan
 }
 
 /* Backdrop — Disney+: fills most of the viewport */
-.itemBackdrop { display: block !important; }
+.itemBackdrop {
+    display: block !important;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+}
 
 .layout-desktop .itemBackdrop {
     height: 75vh;
@@ -1571,7 +1576,7 @@ body:has(#itemDetailPage:not(.hide)) .backdropImage:after { opacity: 1 !importan
     min-height: 32vh; align-content: flex-end;
 }
 .layout-desktop .detailRibbon:has(.person) { min-height: 15vh; align-content: flex-end; }
-.layout-desktop .detailRibbon { height: 100%; min-height: 25vh; margin-top: unset; }
+.layout-desktop .detailRibbon { height: 100%; min-height: 25vh; margin-top: unset; align-items: flex-start; }
 
 /* Detail page secondary content */
 #itemDetailPage:has(.subtitle),
